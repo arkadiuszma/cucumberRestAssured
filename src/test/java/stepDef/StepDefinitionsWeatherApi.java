@@ -1,12 +1,19 @@
 package stepDef;
 
-import configuration.BaseTest;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.filter.log.RequestLoggingFilter;
+import io.restassured.filter.log.ResponseLoggingFilter;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import java.io.File;
 
@@ -14,9 +21,14 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchema;
 import static org.hamcrest.Matchers.is;
 
-public class StepDefinitionsWeatherApi extends BaseTest {
+@Execution(ExecutionMode.CONCURRENT)
+public class StepDefinitionsWeatherApi {
+    WeatherApiDataProvider p = new WeatherApiDataProvider();
     private RequestSpecification requestSpec;
     private Response response;
+    private final String BaseUrl = p.getBaseUrl();
+    private final String apiKey = p.getApiKey();
+    private final String appIdParam = p.getAppIdParam();
 
     @Given("Request specification with the city name {string}")
     public void givenRequestSpecificationWithCityName(String city) {
@@ -32,8 +44,8 @@ public class StepDefinitionsWeatherApi extends BaseTest {
     public void sendGetRequest() {
         response =
                 given()
-                        .spec(requestSpec)
-                .when()
+                        .spec(requestSpec).
+                when()
                         .get();
     }
 
@@ -42,19 +54,37 @@ public class StepDefinitionsWeatherApi extends BaseTest {
         Assertions.assertThat(statusCode).isEqualTo(response.getStatusCode());
     }
 
-    @Then("the response should have content type {string}")
-    public void thenTheResponseShouldHaveContentType(String contentType) {
-        Assertions.assertThat(contentType).isEqualTo(response.getContentType());
-    }
-
-    @Then("the response should have a valid JSON schema")
+    @Then("Response should have a valid JSON schema")
     public void thenTheResponseShouldHaveAValidJsonSchema() {
-        response.then().assertThat().body(matchesJsonSchema(new File(System.getProperty("jsonSchemaPath"))));
+        response.then().assertThat().body(matchesJsonSchema(new File(p.getJsonSchemaPath())));
     }
 
-    @Then("the response should have the expected city name {string}")
+    @Then("Response should have the expected city name {string}")
     public void thenTheResponseShouldHaveTheExpectedCityName(String city) {
-        response.then().assertThat().body(System.getProperty("nameParam"), is(city));
+        response.then().assertThat().body(p.getNameParam(), is(city));
+    }
+
+    private RequestSpecification getRequestSpecByCityName(String city) {
+        return new RequestSpecBuilder()
+                .setBaseUri(BaseUrl)
+                .addQueryParam(p.getCityParam(), city)
+                .addQueryParam(appIdParam, apiKey)
+                .setContentType(ContentType.JSON)
+                .build();
+    }
+
+    private RequestSpecification getRequestSpecByCityId(int id) {
+        return new RequestSpecBuilder()
+                .setBaseUri(BaseUrl)
+                .addQueryParam(p.getIdParam(), id)
+                .addQueryParam(appIdParam, apiKey)
+                .setContentType(ContentType.JSON)
+                .build();
+    }
+
+    @Before
+    public static void setup() {
+        RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
     }
 }
 

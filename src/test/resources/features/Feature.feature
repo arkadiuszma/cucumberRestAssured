@@ -4,8 +4,8 @@ Feature: Testing weather API site
     Given Request specification with the city name "<city>"
     When Send a GET request
     Then Response should have status code 200
-    And the response should have a valid JSON schema
-    And the response should have the expected city name "<city>"
+    And Response should have a valid JSON schema
+    And Response should have the expected city name "<city>"
 
     Examples:
       | city      |
@@ -17,8 +17,8 @@ Feature: Testing weather API site
     Given Request specification with the city ID <id>
     When Send a GET request
     Then Response should have status code 200
-    And the response should have a valid JSON schema
-    And the response should have the expected city name "<city>"
+    And Response should have a valid JSON schema
+    And Response should have the expected city name "<city>"
 
     Examples:
       | id      | city     |
