@@ -1,0 +1,8 @@
+apiTestData:
+  baseUrl: https://api.openweathermap.org/data/2.5/weather?
+  apiKey: 89a2ed8a594cc497a6273490e7ca59dd
+  jsonSchemaPath: src/test/resources/jsonSchema.json
+  cityParam: q
+  appIdParam: appid
+  idParam: id
+  nameParam: name
