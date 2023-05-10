@@ -12,8 +12,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
+
 
 import java.io.File;
 
@@ -21,7 +20,7 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchema;
 import static org.hamcrest.Matchers.is;
 
-@Execution(ExecutionMode.CONCURRENT)
+
 public class StepDefinitionsWeatherApi {
     WeatherApiDataProvider p = new WeatherApiDataProvider();
     private RequestSpecification requestSpec;

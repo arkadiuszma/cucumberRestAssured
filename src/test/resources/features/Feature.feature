@@ -1,6 +1,6 @@
 Feature: Testing weather API site
 
-  Scenario Outline: Get weather details by city name
+  Scenario Outline: Get weather details by city name: <city>
     Given Request specification with the city name "<city>"
     When Send a GET request
     Then Response should have status code 200
@@ -13,7 +13,7 @@ Feature: Testing weather API site
       | New York  |
       | Warsaw    |
 
-  Scenario Outline: Get weather details by city ID
+  Scenario Outline: Get weather details by city ID: <id>
     Given Request specification with the city ID <id>
     When Send a GET request
     Then Response should have status code 200
