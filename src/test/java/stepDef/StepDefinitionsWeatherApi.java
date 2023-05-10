@@ -22,12 +22,12 @@ import static org.hamcrest.Matchers.is;
 
 
 public class StepDefinitionsWeatherApi {
-    WeatherApiDataProvider p = new WeatherApiDataProvider();
+    WeatherApiDataProvider data = new WeatherApiDataProvider();
     private RequestSpecification requestSpec;
     private Response response;
-    private final String BaseUrl = p.getBaseUrl();
-    private final String apiKey = p.getApiKey();
-    private final String appIdParam = p.getAppIdParam();
+    private final String BaseUrl = data.getBaseUrl();
+    private final String apiKey = data.getApiKey();
+    private final String appIdParam = data.getAppIdParam();
 
     @Given("Request specification with the city name {string}")
     public void givenRequestSpecificationWithCityName(String city) {
@@ -55,18 +55,18 @@ public class StepDefinitionsWeatherApi {
 
     @Then("Response should have a valid JSON schema")
     public void thenTheResponseShouldHaveAValidJsonSchema() {
-        response.then().assertThat().body(matchesJsonSchema(new File(p.getJsonSchemaPath())));
+        response.then().assertThat().body(matchesJsonSchema(new File(data.getJsonSchemaPath())));
     }
 
     @Then("Response should have the expected city name {string}")
     public void thenTheResponseShouldHaveTheExpectedCityName(String city) {
-        response.then().assertThat().body(p.getNameParam(), is(city));
+        response.then().assertThat().body(data.getNameParam(), is(city));
     }
 
     private RequestSpecification getRequestSpecByCityName(String city) {
         return new RequestSpecBuilder()
                 .setBaseUri(BaseUrl)
-                .addQueryParam(p.getCityParam(), city)
+                .addQueryParam(data.getCityParam(), city)
                 .addQueryParam(appIdParam, apiKey)
                 .setContentType(ContentType.JSON)
                 .build();
@@ -75,7 +75,7 @@ public class StepDefinitionsWeatherApi {
     private RequestSpecification getRequestSpecByCityId(int id) {
         return new RequestSpecBuilder()
                 .setBaseUri(BaseUrl)
-                .addQueryParam(p.getIdParam(), id)
+                .addQueryParam(data.getIdParam(), id)
                 .addQueryParam(appIdParam, apiKey)
                 .setContentType(ContentType.JSON)
                 .build();
