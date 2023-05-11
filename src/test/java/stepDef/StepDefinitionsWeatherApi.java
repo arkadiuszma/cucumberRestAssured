@@ -11,7 +11,6 @@ import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-import org.assertj.core.api.Assertions;
 
 
 import java.io.File;
@@ -50,7 +49,7 @@ public class StepDefinitionsWeatherApi {
 
     @Then("Response should have status code {int}")
     public void validStatusCode(int statusCode) {
-        Assertions.assertThat(statusCode).isEqualTo(response.getStatusCode());
+        response.then().statusCode(statusCode);
     }
 
     @Then("Response should have a valid JSON schema")
